@@ -18,8 +18,8 @@ router.post('/', validateUser("name"), (req, res) => {
 });
 
 router.post('/:id/posts', validatePost("text"), (req, res) => {
-  const postInfo = { ...req.body, user_id: req.params.id }
-  Posts.insert(postInfo)
+  const postInfo = { ...req.body, user_id: req.params.id}
+  Posts.insert(req.body)
     .then(post => {
       res.status(201).json(post)
     })
