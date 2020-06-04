@@ -18,7 +18,7 @@ router.post('/', validateUser("name"), (req, res) => {
 });
 
 router.post('/:id/posts', validatePost("text"), (req, res) => {
-  const postInfo = { ...req.body, user_id: req.params.id}
+  // const postInfo = { ...req.body, user_id: req.params.id}
   Posts.insert(req.body)
     .then(post => {
       res.status(201).json(post)
@@ -55,8 +55,19 @@ router.get('/:id/posts', (req, res) => {
     })
 });
 
-router.delete('/:id', (req, res) => {
-  // do your magic!
+router.delete('/:id', validateUserId, (req, res) => {
+    Users.remove(req.params.id)
+    .then(user => {
+      if (user) {
+          res.status(200).json({ message: "it works" })
+      } else {
+          res.status(404).json({ message: "The post with the specified ID does not exist." })
+          }
+      })
+      .catch(err => {
+          console.log(err)
+          res.status(500).json({ error: "The post could not be removed" })
+      })
 });
 
 router.put('/:id', (req, res) => {
@@ -102,3 +113,28 @@ function validatePost(prop) {
 }
 
 module.exports = router;
+
+// 6/3's project
+// router.post('/:id/posts', (req, res) => {
+//     const userId = Number(req.params.id)
+//     const newPost = req.body
+//     if(!newPost) {
+//       console.log(newPost)
+//       res.status(400).json({ error: 'missing post data'})
+//     } else {
+//       Users.getById(userId)
+//         .then(post => {
+//           if (post.length === 0) {
+//             res.status(404).json({ message: "The post with the specified ID does not exist." })
+//           } else{
+//             Posts.insert(newPost)
+//             .then(post => res.status(201).json(post))
+//             .catch(err => {
+//               console.log(err)
+//               res.status(500).json({ error: 'try again man'})
+//             })
+//           }
+//         })
+//         .catch(err => console.log(err))
+//     }
+//   })
