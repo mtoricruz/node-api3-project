@@ -70,8 +70,27 @@ router.delete('/:id', validateUserId, (req, res) => {
       })
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validateUserId, (req, res) => {
   // do your magic!
+    const userId = req.params.id
+    const editUser = req.body
+
+    // if (!editPost.title || !editPost.contents) {
+    //     res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
+    // } else {
+        Users.update(userId, editUser)
+            .then(user => {
+                if (user) {
+                    res.status(200).json({ message: 'It works', user})
+                } else {
+                    res.status(404).json({ message: "The post with the specified ID does not exist." })
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                res.status(500).json({ error: "The post information could not be modified." })
+            })
+    // }
 });
 
 //custom middleware
